@@ -20,6 +20,17 @@
 Например если первый блок поменял через 200мс то следующий должен поменять через 400 и т.д.
 */
 
+const box = document.querySelectorAll(".box");
+let pause = 200;
+
+box.forEach((event) => {
+  event.addEventListener("mouseenter", getColors);
+});
+
+box.forEach((event) => {
+  event.addEventListener("mouseleave", deleteColors);
+});
+
 const colors = [
   "red",
   "blue",
@@ -33,23 +44,23 @@ const colors = [
   "brown",
 ];
 
-const box = document.querySelectorAll(".box");
-let pause = 200;
+function setColors(element) {
+  let randomColor = colors[Math.floor(Math.random() * colors.length)];
+  element.style.background = randomColor;
+}
 
-const getColors = (event) => {
-  let ms = (event.timeout = event.timeout + pause || 0);
-  let target = event.currentTarget;
-  colors.forEach((color) => {
-    setTimeout(function () {
-      console.log(target);
-    }, ms);
-  });
-};
+function getColors() {
+  let target = this;
+  let i = 0;
+  let interval = setInterval(function () {
+    setColors(target);
+    i++;
+    if (i === colors.length) {
+      clearInterval(interval);
+    }
+  }, pause);
+}
 
-box.forEach((event) => {
-  event.addEventListener("click", getColors, true);
-});
-
-box.forEach((event) => {
-  event.addEventListener("click", getColors);
-});
+function deleteColors() {
+  this.style.background = "";
+}
